@@ -13,9 +13,6 @@ function shuffleStr(str) {
   return splitStr.join(''); //join back the split str
 }
   
-  
-
-
 async function setup () {
   const gps = await nn.askForGPS();
   
@@ -23,29 +20,47 @@ async function setup () {
   const lngStr = String(gps.lng);
   
   const lst1 = `https://api.opencagedata.com/geocode/v1/json?q=${latStr}%2C+${lngStr}&key=${APIkey}`;
+
   const firstRegion = await fetch(lst1);
-  const rptData = await firstRegion.json()
+  const regionData = await firstRegion.json()
+  console.log(regionData);
   
-  
-  const city1 = lst1[city];
-  const continent1 = lst1[continent];
-  const country1 = lst1[country];
+  //fetch your current location
+  const city1 = regionData.results.components.city;
+  const continent1 = regionData.results.components.continent;
+  const country1 = regionData.results.components.country;
   const lang1URL = `https://restcountries.com/v3.1/name/{country1}`
   const lang1lst = await fetch(lang1URL);
-  const pointData = await lang1lst.json()
+  const lang1Data = await lang1lst.json()
   
+  //shuffle numbers of your location
   const shuffledLat = shuffleStr(latStr);
   const shuffledLng = shuffleStr(lngStr);
   
+  //fetch the new location from your shuffled coordidnates
   const lst2 = `https://api.opencagedata.com/geocode/v1/json?q=${shuffledLat}%2C+${shuffledLng}&key=${APIkey}`;
-  const newCity = lst2[city];
-  const newContinent = lst2[continent];
-  const newCountry = lst2[country];
-  const lang2 = `https://restcountries.com/v3.1/name/{newCountry}`;
+  const secondRegion = await fetch(lst2);
+  const reg2Data = await secondRegion.json()
+  console.log(reg2Data);
+  const newCity = reg2Data.results.components.city;
+  const newContinent = reg2Data.results.components.continent;
+  const newCountry = reg2Data.results.components.country;
   
-  log(`You are in: ${city1}, ${country1}, ${continent1}, where the common tounge is ${lang1}`);
-  log(`But you are now in: ${newCity}, ${newCountry}, ${newContinent}, where a common toungue is ${lang2}`);
-  log(`Read a poem in a language spoken in that country!`);
+  //get the language from the new region
+  const lang2URL =`https://restcountries.com/v3.1/name/{newCountry}`;
+  const lang2lst = await fetch(lang2URL);
+  const lang2Data = await lang2lst.json()
+  
+  //pull an article in that language (using api?)
+  //make a poem out of that article
+  
+  
+  
+  //state where you are at, then where you are after shuffling
+
+  console.log(`You are in: ${city1}, ${country1}, ${continent1}, where the common tounge is ${lang1Data}`);
+  console.log(`But you are now in: ${newCity}, ${newCountry}, ${newContinent}, where a common toungue is ${lang2}`);
+  console.log(`Read a poem in a language spoken in that country!`);
   
  
 }
