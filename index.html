@@ -1,6 +1,7 @@
 <script src="https://cdn.jsdelivr.net/gh/netizenorg/netnet-standard-library/build/nn.min.js"></script>
 <script>
 /* global nn */
+const APIkey = `2ea443b2168f74270967e14bdaa9bb40`;
 //using rest apis (diff from date, time, loc)
 //JSON: syntax sensitive
 function shuffleStr(str) {
@@ -18,17 +19,35 @@ function shuffleStr(str) {
 async function setup () {
   const gps = await nn.askForGPS();
   
-  const str = String(gps.lat);
-  const str2 = String(gps.lat);
+  const latStr = String(gps.lat);
+  const lngStr = String(gps.lng);
   
-  const shuffledLat = shuffleStr(str);
-  const shuffledLng = shuffleStr(str2);
-  //log(`You are in: ${state}, ${country}, ${continent}`)
-  //log(`But you are now in: ${newState}, ${newCountry}, ${newContinent}`)
-  const lang = `https://restcountries.com/v3.1/name/{country}`
-  const region = 
-  //log(`Read a poem in a language spoken in that country!`)
+  const lst1 = `https://api.opencagedata.com/geocode/v1/json?q=${latStr}%2C+${lngStr}&key=${APIkey}`;
+  const firstRegion = await fetch(lst1);
+  const rptData = await firstRegion.json()
   
+  
+  const city1 = lst1[city];
+  const continent1 = lst1[continent];
+  const country1 = lst1[country];
+  const lang1URL = `https://restcountries.com/v3.1/name/{country1}`
+  const lang1lst = await fetch(lang1URL);
+  const pointData = await lang1lst.json()
+  
+  const shuffledLat = shuffleStr(latStr);
+  const shuffledLng = shuffleStr(lngStr);
+  
+  const lst2 = `https://api.opencagedata.com/geocode/v1/json?q=${shuffledLat}%2C+${shuffledLng}&key=${APIkey}`;
+  const newCity = lst2[city];
+  const newContinent = lst2[continent];
+  const newCountry = lst2[country];
+  const lang2 = `https://restcountries.com/v3.1/name/{newCountry}`;
+  
+  log(`You are in: ${city1}, ${country1}, ${continent1}, where the common tounge is ${lang1}`);
+  log(`But you are now in: ${newCity}, ${newCountry}, ${newContinent}, where a common toungue is ${lang2}`);
+  log(`Read a poem in a language spoken in that country!`);
+  
+ 
 }
   
 nn.on('load', setup)
