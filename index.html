@@ -3,20 +3,32 @@
 /* global nn */
 //using rest apis (diff from date, time, loc)
 //JSON: syntax sensitive
+function shuffleStr(str) {
+  const splitStr = str.split('') //split the string first
+  for (let i = 0; i < splitStr.length; i++) { //loop through each char in str
+    const rand = Math.floor(Math.random() * (i + 1)); //generate a random idx
+    [splitStr[i], splitStr[rand]] = [splitStr[rand], splitStr[i]]; //flip them
+  }
+  return splitStr.join(''); //join back the split str
+}
+  
+  
+
+
 async function setup () {
-  const url = 'https://dog.ceo/api/breeds/image/random'
-  const res = await fetch(url) //in this fucntion is the url from api we are using
-  //const json = await res.text //res. what data do we want to get out of it?
-  //const html = await rs.text() //go to website and get text
-  const json = await res.json() //returns in console an object with message and status
-  console.log(json.message) //this is a res api, then we can parse and just get message, which is URL to image
-  //we can then add that to our page
-  nn.create('img')
-    .set('src', json.message)
-  .addto('body')
-  //this is using data grabbed on other parts of internet
-  //${} are query strs
-  //API keys 
+  const gps = await nn.askForGPS();
+  
+  const str = String(gps.lat);
+  const str2 = String(gps.lat);
+  
+  const shuffledLat = shuffleStr(str);
+  const shuffledLng = shuffleStr(str2);
+  //log(`You are in: ${state}, ${country}, ${continent}`)
+  //log(`But you are now in: ${newState}, ${newCountry}, ${newContinent}`)
+  const lang = `https://restcountries.com/v3.1/name/{country}`
+  const region = 
+  //log(`Read a poem in a language spoken in that country!`)
+  
 }
   
 nn.on('load', setup)
